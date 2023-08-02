@@ -238,6 +238,26 @@ class Router {
   }
 
   /*
+  * Get the routes
+  *
+  * @return array
+  */
+  public function routes(): array {
+    return $this->routes;
+  }
+
+  /*
+  * Set the routes
+  *
+  * @param array $route
+  *
+  * @return void
+  */
+  public function setRoutes(array $route): void {
+    $this->routes = $route;
+  }
+
+  /*
   * Group routes
   *
   * @param Closure $group

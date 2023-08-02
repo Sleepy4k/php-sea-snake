@@ -19,7 +19,7 @@ class Session {
   *
   * @param string $name
   *
-  * @return string
+  * @return mixed
   */
   public static function get(string $name = '') {
     return $_SESSION[$name];
@@ -29,11 +29,11 @@ class Session {
   * Set a given session
   *
   * @param string $name
-  * @param string $value
+  * @param mixed $value
   *
-  * @return string
+  * @return void
   */
-  public static function set(string $name = '', string $value = '') {
+  public static function set(string $name, mixed $value) {
     return $_SESSION[$name] = $value;
   }
 
@@ -54,17 +54,17 @@ class Session {
   * Flash a given session
   *
   * @param string $name
-  * @param string $string
+  * @param mixed $value
   *
   * @return string
   */
-  public static function flash(string $name = '', string $string = '') {
+  public static function flash(string $name = '', string $value = '') {
     if (self::exists($name)) {
       $session = self::get($name);
       self::delete($name);
       return $session;
     } else {
-      self::set($name, $string);
+      self::set($name, $value);
     }
   }
 
