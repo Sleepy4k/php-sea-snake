@@ -29,7 +29,7 @@
       "src/Helper/url.php"
     ],
     "psr-4": {
-      "Snake\\": "src/Core/"
+      "Snake\\": "src/"
     }
   },
   "config": {
