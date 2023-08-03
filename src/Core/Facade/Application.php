@@ -26,7 +26,7 @@ class Application {
 
       return new $name(...$this->getDependencies($args, $default));
     } catch (ReflectionException $e) {
-        throw new Exception($e->getMessage());
+      throw new Exception($e->getMessage());
     }
   }
 
@@ -105,7 +105,7 @@ class Application {
       $result = $this->resolve($class, array($this));
 
       if (!is_object($result)) {
-          throw new Exception('Return value harus sebuah object !');
+        throw new Exception('The result must be object');
       }
 
       $class = $result;

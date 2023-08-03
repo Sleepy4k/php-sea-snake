@@ -4,6 +4,7 @@ namespace Snake\Core\Facade;
 
 use Closure;
 use Bin\Kernel as BinKernel;
+use Snake\Core\Http\Request;
 use Snake\Core\Routing\Route;
 use Snake\Core\Middleware\Middleware;
 
@@ -13,7 +14,6 @@ class Service {
 
   public function __construct() {
     $this->request = App::get()->singleton(Request::class);
-    $this->respond = App::get()->singleton(Respond::class);
 
     $this->bootingProviders();
   }
