@@ -8,7 +8,7 @@ final class App {
    * 
    * @var Application $path
    */
-  private $app;
+  private static $app;
 
   public static function &new(Application $app): Application {
     static::$app = $app;
