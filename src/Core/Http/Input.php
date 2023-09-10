@@ -3,14 +3,14 @@
 namespace Snake\Core\Http;
 
 class Input {
-  /*
-  * Check if a given input exists
-  *
-  * @param string $type
-  *
-  * @return bool
-  */
-  public static function exists(string $type = '') {
+  /**
+   * Check if a given input exists
+   *
+   * @param string $type
+   *
+   * @return bool
+   */
+  public static function exists(string $type = ''): bool {
     switch ($type) {
       case 'post':
         return (!empty($_POST)) ? true : false;
@@ -24,14 +24,14 @@ class Input {
     }
   }
 
-  /*
-  * Get a given input
-  *
-  * @param string $item
-  *
-  * @return string
-  */
-  public static function get(string $item = '') {
+  /**
+   * Get a given input
+   *
+   * @param string $item
+   *
+   * @return string
+   */
+  public static function get(string $item = ''): string {
     if (isset($_POST[$item])) {
       return $_POST[$item];
     } else if (isset($_GET[$item])) {
@@ -41,23 +41,23 @@ class Input {
     return '';
   }
   
-  /*
-  * Get all inputs
-  *
-  * @return array
-  */
-  public static function all() {
+  /**
+   * Get all inputs
+   *
+   * @return array
+   */
+  public static function all(): array {
     return array_merge($_POST, $_GET);
   }
 
-  /*
-  * Get a given input
-  *
-  * @param string $item
-  *
-  * @return string
-  */
-  public static function old(string $item = '') {
+  /**
+   * Get a given input
+   *
+   * @param string $item
+   *
+   * @return string
+   */
+  public static function old(string $item = ''): string {
     if (isset($_SESSION['old'][$item])) {
       return $_SESSION['old'][$item];
     }
@@ -65,26 +65,26 @@ class Input {
     return '';
   }
 
-  /*
-  * Set a given input
-  *
-  * @param string $item
-  * @param string $value
-  *
-  * @return void
-  */
-  public static function set(string $item = '', string $value = '') {
+  /**
+   * Set a given input
+   *
+   * @param string $item
+   * @param string $value
+   *
+   * @return void
+   */
+  public static function set(string $item = '', string $value = ''): void {
     $_SESSION['old'][$item] = $value;
   }
 
-  /*
-  * Delete a given input
-  *
-  * @param string $item
-  *
-  * @return void
-  */
-  public static function delete(string $item = '') {
+  /**
+   * Delete a given input
+   *
+   * @param string $item
+   *
+   * @return void
+   */
+  public static function delete(string $item = ''): void {
     unset($_SESSION['old'][$item]);
   }
 }
