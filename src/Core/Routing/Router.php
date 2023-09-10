@@ -53,7 +53,7 @@ class Router {
    * 
    * @return Router
    */
-  private function add(string $method, string $path, mixed $action = null, mixed $middleware = null): Router {
+  private function add(string $method, string $path, $action = null, $middleware = null): Router {
     if (is_array($action)) {
       $controller = $action[0];
       $function = $action[1];
@@ -86,7 +86,7 @@ class Router {
    *
    * @return Router
    */
-  public function get(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function get(string $path, $action = null, $middleware = null): Router {
     return $this->add('GET', $path, $action, $middleware);
   }
 
@@ -99,7 +99,7 @@ class Router {
    *
    * @return Router
    */
-  public function post(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function post(string $path, $action = null, $middleware = null): Router {
     return $this->add('POST', $path, $action, $middleware);
   }
 
@@ -112,7 +112,7 @@ class Router {
    *
    * @return Router
    */
-  public function put(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function put(string $path, $action = null, $middleware = null): Router {
     return $this->add('PUT', $path, $action, $middleware);
   }
 
@@ -125,7 +125,7 @@ class Router {
    *
    * @return Router
    */
-  public function patch(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function patch(string $path, $action = null, $middleware = null): Router {
     return $this->add('PATCH', $path, $action, $middleware);
   }
 
@@ -138,7 +138,7 @@ class Router {
    *
    * @return Router
    */
-  public function delete(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function delete(string $path, $action = null, $middleware = null): Router {
     return $this->add('DELETE', $path, $action, $middleware);
   }
 
@@ -151,7 +151,7 @@ class Router {
    *
    * @return Router
    */
-  public function options(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function options(string $path, $action = null, $middleware = null): Router {
     return $this->add('OPTIONS', $path, $action, $middleware);
   }
 
@@ -165,7 +165,7 @@ class Router {
    *
    * @return Router
    */
-  public function match(array $methods, string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function match(array $methods, string $path, $action = null, $middleware = null): Router {
     foreach ($methods as $method) {
       $this->add($method, $path, $action, $middleware);
     }
@@ -182,7 +182,7 @@ class Router {
    *
    * @return Router
    */
-  public function any(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public function any(string $path, $action = null, $middleware = null): Router {
     return $this->match(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], $path, $action, $middleware);
   }
 
@@ -219,7 +219,7 @@ class Router {
    *
    * @return Router
    */
-  public function middleware(mixed $middleware): Router {
+  public function middleware($middleware): Router {
     $this->middleware = is_string($middleware) ? array($middleware) : $middleware;
 
     return $this;

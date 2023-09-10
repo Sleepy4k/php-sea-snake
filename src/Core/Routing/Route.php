@@ -14,7 +14,7 @@ final class Route {
    * 
    * @return Router
    */
-  public static function any(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function any(string $path, $action = null, $middleware = null): Router {
     return static::router()->any($path, $action, $middleware);
   }
 
@@ -27,7 +27,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function get(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function get(string $path, $action = null, $middleware = null): Router {
     return static::router()->get($path, $action, $middleware);
   }
 
@@ -40,7 +40,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function post(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function post(string $path, $action = null, $middleware = null): Router {
     return static::router()->post($path, $action, $middleware);
   }
 
@@ -53,7 +53,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function put(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function put(string $path, $action = null, $middleware = null): Router {
     return static::router()->put($path, $action, $middleware);
   }
 
@@ -66,7 +66,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function patch(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function patch(string $path, $action = null, $middleware = null): Router {
     return static::router()->patch($path, $action, $middleware);
   }
 
@@ -79,7 +79,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function delete(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function delete(string $path, $action = null, $middleware = null): Router {
     return static::router()->delete($path, $action, $middleware);
   }
 
@@ -92,7 +92,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function options(string $path, mixed $action = null, mixed $middleware = null): Router {
+  public static function options(string $path, $action = null, $middleware = null): Router {
     return static::router()->options($path, $action, $middleware);
   }
 
@@ -110,11 +110,11 @@ final class Route {
   /**
    * Add middleware to routes
    *
-   * @param mixed $middleware
+   * @param array|string $middleware
    *
    * @return Router
    */
-  public static function middleware(mixed $middleware): Router {
+  public static function middleware($middleware): Router {
     return static::router()->middleware($middleware);
   }
 
