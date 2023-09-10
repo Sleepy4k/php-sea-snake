@@ -26,7 +26,7 @@ if (!function_exists('env')) {
    *
    * @return mixed
    */
-  function env(string $key, mixed $default, string $path = __DIR__ . '/../../../../..') {
+  function env(string $key, $default, string $path = __DIR__ . '/../../../../..') {
     $env = new DotEnv($path);
 
     return $env->get($key, $default);
