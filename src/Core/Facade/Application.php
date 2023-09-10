@@ -9,15 +9,35 @@ use ReflectionFunction;
 use ReflectionException;
 
 class Application {
+  /**
+   * The object pool
+   *
+   * @var array $objectPool
+   */
   private $objectPool;
 
+  /**
+   * Constructor
+   *
+   * @return void
+   */
   public function __construct() {
     if ($this->objectPool === null) {
       $this->objectPool = [];
     }
   }
 
-  public function build(string $name, array $default = []) {
+  /**
+   * Build the object
+   *
+   * @param string $name
+   * @param array $default
+   *
+   * @return object
+   * 
+   * @throws Exception
+   */
+  public function build(string $name, array $default = []): object {
     try {
       $reflector = new ReflectionClass($name);
 
@@ -30,6 +50,14 @@ class Application {
     }
   }
 
+  /**
+   * Get the dependencies
+   *
+   * @param array $parameters
+   * @param array $default
+   *
+   * @return array
+   */
   private function getDependencies(array $parameters, array $default = []): array {
     $args = [];
     $id = 0;
@@ -49,6 +77,14 @@ class Application {
     return $args;
   }
 
+  /**
+   * Get the object
+   *
+   * @param string $name
+   * @param array $default
+   *
+   * @return object
+   */
   public function &singleton(string $name, array $default = []): object {
     if (empty($this->objectPool[$name])) {
       $this->objectPool[$name] = $this->build($name, $default);
@@ -60,13 +96,32 @@ class Application {
 
     return $this->objectPool[$name];
   }
-  
+
+  /**
+   * Make the object
+   *
+   * @param string $name
+   * @param array $default
+   *
+   * @return object
+   */
   public function &make(string $name, array $default = []): object {
     $this->clean($name);
     return $this->singleton($name, $default);
   }
 
-  public function invoke($name, string $method, array $default = []): mixed {
+  /**
+   * Invoke the object
+   *
+   * @param string|object $name
+   * @param string $method
+   * @param array $default
+   *
+   * @return mixed
+   * 
+   * @throws Exception
+   */
+  public function invoke(mixed $name, string $method, array $default = []): mixed {
     if (!is_object($name)) {
       $name = $this->singleton($name);
     }
@@ -81,7 +136,14 @@ class Application {
     }
   }
 
-  public function clean(string $name) {
+  /**
+   * Clean the object
+   *
+   * @param string $name
+   *
+   * @return object|null
+   */
+  public function clean(string $name): object|null {
     $object = $this->objectPool[$name] ?? null;
     $this->objectPool[$name] = null;
     unset($this->objectPool[$name]);
@@ -89,6 +151,16 @@ class Application {
     return $object;
   }
 
+  /**
+   * Resolve the object
+   *
+   * @param Closure $name
+   * @param array $default
+   *
+   * @return mixed
+   * 
+   * @throws Exception
+   */
   public function resolve(Closure $name, array $default = []): mixed {
     try {
       $reflector = new ReflectionFunction($name);
@@ -100,7 +172,17 @@ class Application {
     }
   }
 
-  public function bind(string $abstract, $class): void {
+  /**
+   * Bind the object
+   *
+   * @param string $abstract
+   * @param mixed $class
+   *
+   * @return void
+   * 
+   * @throws Exception
+   */
+  public function bind(string $abstract, mixed $class): void {
     if ($class instanceof Closure) {
       $result = $this->resolve($class, array($this));
 

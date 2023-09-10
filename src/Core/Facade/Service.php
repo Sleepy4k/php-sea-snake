@@ -2,22 +2,34 @@
 
 namespace Snake\Core\Facade;
 
-use Closure;
+use Snake\Core\View\Sea;
 use Bin\Kernel as BinKernel;
 use Snake\Core\Http\Request;
 use Snake\Core\Routing\Route;
-use Snake\Core\Middleware\Middleware;
 
 class Service {
+  /**
+   * The request
+   *
+   * @var Request $request
+   */
   private $request;
-  private $respond;
 
+  /**
+   * Constructor
+   *
+   * @return void
+   */
   public function __construct() {
     $this->request = App::get()->singleton(Request::class);
-
     $this->bootingProviders();
   }
 
+  /**
+   * Booting providers
+   *
+   * @return void
+   */
   private function bootingProviders(): void {
     $services = App::get()->singleton(BinKernel::class)->services();
 
@@ -26,38 +38,20 @@ class Service {
     }
   }
 
-  private function registerProvider(): void {
-    $services = App::get()->singleton(BinKernel::class)->services();
-
-    foreach ($services as $service) {
-      App::get()->clean($service)->registrasi();
-    }
-  }
-  
-  private function coreMiddleware(array $route, array $variables): Closure {
-    return function () use ($route, $variables): mixed {
-      $this->registerProvider();
-      return $this->invokeController($route, $variables);
-    };
-  }
-
-  private function process(array $route, array $variables): int {
-    $middleware = new Middleware([
-      ...App::get()->singleton(BinKernel::class)->middlewares(),
-      ...$route['middleware']
-    ]);
-
-    $this->respond->send($middleware->handle($this->request, $this->coreMiddleware($route, $variables)));
-
-    return 0;
-  }
-
-  private function invokeController(array $route, array $variables): mixed {
+  /**
+   * Invoke controller
+   *
+   * @param array $route
+   * @param array $variables
+   *
+   * @return int
+   */
+  private function invokeController(array $route, array $variables): int {
     $controller = $route['controller'];
     $function = $route['function'];
 
     if ($function === null) {
-      return null;
+      return 0;
     }
 
     if ($controller === null) {
@@ -66,25 +60,41 @@ class Service {
     }
 
     array_shift($variables);
-    return App::get()->invoke($controller, $function, $variables);
-  }
-
-  private function handleOutOfRoute(bool $routeMatch): int {
-    if ($routeMatch) {
-      $this->respond->send(json_encode([
-        'error' => 'Method Not Allowed 405'
-      ], 405));
-
-      return 0;
-    }
-
-    $this->respond->send(json_encode([
-      'error' => 'Not Found 404'
-    ], 404));
+    App::get()->invoke($controller, $function, $variables);
 
     return 0;
   }
 
+  /**
+   * Handle out of route
+   *
+   * @param bool $routeMatch
+   *
+   * @return int
+   */
+  private function handleOutOfRoute(bool $routeMatch): int {
+    if ($routeMatch) {
+      Sea::view(__DIR__ . '/../../View', 'error', [
+        'title' => config('app', 'name'),
+        'message' => 'Method Not Allowed 405'
+      ]);
+
+      return 0;
+    }
+
+    Sea::view(__DIR__ . '/../../View', 'error', [
+      'title' => config('app', 'name'),
+      'message' => 'Not Found 404'
+    ]);
+
+    return 0;
+  }
+
+  /**
+   * Get valid url
+   *
+   * @return string
+   */
   private function getValidUrl(): string {
     $sep = explode($this->request->server('HTTP_HOST'), baseurl(), 2)[1];
 
@@ -101,10 +111,19 @@ class Service {
     return '/';
   }
 
+  /**
+   * Run the application
+   *
+   * @return int
+   */
   public function run(): int {
     $url = $this->getValidUrl();
     $path = parse_url($url, PHP_URL_PATH);
     $this->request->__set('REQUEST_URL', $url);
+
+    if ($path != '/') {
+      $path = '/' . trim($path, '/');
+    }
 
     $method = $this->request->method() === 'POST'
       ? strtoupper($this->request->get('_method', 'POST'))
@@ -120,7 +139,7 @@ class Service {
         $routeMatch = true;
 
         if ($route['method'] === $method) {
-          return $this->process($route, $variables);
+          return $this->invokeController($route, $variables);
         }
       }
     }

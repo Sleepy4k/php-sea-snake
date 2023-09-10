@@ -2,20 +2,38 @@
 
 namespace Snake\Core\Facade;
 
-use Exception;
-
 abstract class Provider {
-  protected $instance;
+  /**
+   * The application instance
+   *
+   * @var Application $app
+   */
+  protected $app;
 
+  /**
+   * Constructor
+   *
+   * @return void
+   */
   public function __construct() {
-    $this->instance =  App::get();
+    $this->app = App::get();
   }
 
-  public function registration() {
-    throw new Exception('Method registration() not implemented');
+  /**
+   * Register the service provider
+   *
+   * @return void
+   */
+  public function register(): void {
+    //
   }
 
-  public function boot() {
-    throw new Exception('Method boot() not implemented');
+  /**
+   * Booting the service provider
+   *
+   * @return void
+   */
+  public function booting(): void {
+    //
   }
 }
