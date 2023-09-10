@@ -5,47 +5,46 @@ namespace Snake\Core\Routing;
 use Closure;
 
 class Router {
-  /*
-  * The routes
-  *
-  * @var array $routes
-  */
+  /**
+   * The routes
+   *
+   * @var array $routes
+   */
   protected $routes;
 
-  /*
-  * Controller routes
-  *
-  * @var string|null $controller
-  */
+  /**
+   * Controller routes
+   *
+   * @var string|null $controller
+   */
   protected $controller;
 
-  /*
-  * Prefix for routes
-  *
-  * @var string|null $prefix
-  */
+  /**
+   * Prefix for routes
+   *
+   * @var string|null $prefix
+   */
   protected $prefix;
 
-  /*
-  * Middleware for routes
-  *
-  * @var array $middleware
-  */
+  /**
+   * Middleware for routes
+   *
+   * @var array $middleware
+   */
   protected $middleware;
 
-  /*
-  * Constructor
-  *
-  * @return void
-  */
-  public function __construct()
-  {
+  /**
+   * Constructor
+   *
+   * @return void
+   */
+  public function __construct() {
     $this->routes = [];
     $this->middleware = [];
   }
 
-  /*
-   * Simpan urlnya.
+  /**
+   * Insert route to routes
    *
    * @param string $method
    * @param string $path
@@ -54,7 +53,7 @@ class Router {
    * 
    * @return Router
    */
-  private function add(string $method, string $path, $action = null, $middleware = null): Router {
+  private function add(string $method, string $path, mixed $action = null, mixed $middleware = null): Router {
     if (is_array($action)) {
       $controller = $action[0];
       $function = $action[1];
@@ -78,95 +77,95 @@ class Router {
     return $this;
   }
 
-  /*
-  * Add a GET route
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function get(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a GET route
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function get(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->add('GET', $path, $action, $middleware);
   }
 
-  /*
-  * Add a POST route
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function post(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a POST route
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function post(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->add('POST', $path, $action, $middleware);
   }
 
-  /*
-  * Add a PUT route
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function put(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a PUT route
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function put(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->add('PUT', $path, $action, $middleware);
   }
 
-  /*
-  * Add a PATCH route
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function patch(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a PATCH route
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function patch(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->add('PATCH', $path, $action, $middleware);
   }
 
-  /*
-  * Add a DELETE route
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function delete(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a DELETE route
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function delete(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->add('DELETE', $path, $action, $middleware);
   }
 
-  /*
-  * Add a OPTIONS route
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function options(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a OPTIONS route
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function options(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->add('OPTIONS', $path, $action, $middleware);
   }
 
-  /*
-  * Add a route with multiple methods
-  *
-  * @param array $methods
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function match(array $methods, string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a route with multiple methods
+   *
+   * @param array $methods
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function match(array $methods, string $path, mixed $action = null, mixed $middleware = null): Router {
     foreach ($methods as $method) {
       $this->add($method, $path, $action, $middleware);
     }
@@ -174,96 +173,96 @@ class Router {
     return $this;
   }
 
-  /*
-  * Add a route with all methods
-  *
-  * @param string $path
-  * @param array|string|null $action
-  * @param array|string|null $middleware
-  *
-  * @return Router
-  */
-  public function any(string $path, $action = null, $middleware = null): Router {
+  /**
+   * Add a route with all methods
+   *
+   * @param string $path
+   * @param array|string|null $action
+   * @param array|string|null $middleware
+   *
+   * @return Router
+   */
+  public function any(string $path, mixed $action = null, mixed $middleware = null): Router {
     return $this->match(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], $path, $action, $middleware);
   }
 
-  /*
-  * Set the controller for the next routes
-  *
-  * @param string $controller
-  *
-  * @return Router
-  */
+  /**
+   * Set the controller for the next routes
+   *
+   * @param string $controller
+   *
+   * @return Router
+   */
   public function controller(string $controller): Router {
     $this->controller = $controller;
 
     return $this;
   }
 
-  /*
-  * Set the prefix for the next routes
-  *
-  * @param string $prefix
-  *
-  * @return Router
-  */
+  /**
+   * Set the prefix for the next routes
+   *
+   * @param string $prefix
+   *
+   * @return Router
+   */
   public function prefix(string $prefix): Router {
     $this->prefix = $prefix;
 
     return $this;
   }
 
-  /*
-  * Set the middleware for the next routes
-  *
-  * @param array|string $middleware
-  *
-  * @return Router
-  */
-  public function middleware($middleware): Router {
+  /**
+   * Set the middleware for the next routes
+   *
+   * @param array|string $middleware
+   *
+   * @return Router
+   */
+  public function middleware(mixed $middleware): Router {
     $this->middleware = is_string($middleware) ? array($middleware) : $middleware;
 
     return $this;
   }
 
-  /*
-  * Set the name for the next routes
-  *
-  * @param string $name
-  *
-  * @return void
-  */
+  /**
+   * Set the name for the next routes
+   *
+   * @param string $name
+   *
+   * @return void
+   */
   public function name(string $name): void {
     $this->routes[count($this->routes) - 1]['name'] = $name;
   }
 
-  /*
-  * Get the routes
-  *
-  * @return array
-  */
+  /**
+   * Get the routes
+   *
+   * @return array
+   */
   public function routes(): array {
     return $this->routes;
   }
 
-  /*
-  * Set the routes
-  *
-  * @param array $route
-  *
-  * @return void
-  */
+  /**
+   * Set the routes
+   *
+   * @param array $route
+   *
+   * @return void
+   */
   public function setRoutes(array $route): void {
     $this->routes = $route;
   }
 
-  /*
-  * Group routes
-  *
-  * @param Closure $group
-  *
-  * @return void
-  */
+  /**
+   * Group routes
+   *
+   * @param Closure $group
+   *
+   * @return void
+   */
   public function group(Closure $group): void {
     $tempController = $this->controller;
     $tempPrefix = $this->prefix;
