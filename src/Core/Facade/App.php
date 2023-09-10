@@ -10,6 +10,13 @@ final class App {
    */
   private static $app;
 
+  /**
+   * Create new app object
+   * 
+   * @param Application $app
+   * 
+   * @return Application
+   */
   public static function &new(Application $app): Application {
     static::$app = $app;
     return static::get();
