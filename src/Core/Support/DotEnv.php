@@ -3,20 +3,18 @@
 namespace Snake\Core\Support;
 
 class DotEnv {
-  /*
-  * Path to .env file
-  *
-  * @var string $path
-  */
+  /**
+   * Path to .env file
+   *
+   * @var string $path
+   */
   protected $path;
 
-  /*
-  * Create a new dotenv instance.
-  *
-  * @param string $path
-  *
-  * @return void
-  */
+  /**
+   * Create a new dotenv instance.
+   *
+   * @param string $path
+   */
   public function __construct(string $path = '') {
     if ($path === null) {
       $path = getcwd();
@@ -33,12 +31,12 @@ class DotEnv {
     $this->load();
   }
 
-  /*
-  * Load environment file and set values to $_ENV and $_SERVER superglobals
-  *
-  * @return void
-  */
-  protected function load() {
+  /**
+   * Load environment file and set values to $_ENV and $_SERVER superglobals
+   *
+   * @return void
+   */
+  protected function load(): void {
     $lines = file($this->path . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
@@ -59,15 +57,15 @@ class DotEnv {
     }
   }
 
-  /*
-  * Get an environment variable
-  *
-  * @param string $key
-  * @param mixed $default
-  *
-  * @return mixed
-  */
-  public static function get(string $key, $default = null) {
+  /**
+   * Get an environment variable
+   *
+   * @param string $key
+   * @param mixed $default
+   *
+   * @return mixed
+   */
+  public static function get(string $key, mixed $default = null): mixed {
     $value = getenv($key);
 
     if ($value === false) {
@@ -82,7 +80,7 @@ class DotEnv {
       case $value === 'empty':
         return '';
       case $value === 'null':
-        return;
+        return null;
     }
 
     if (strlen($value) > 1 && substr($value, 0, 1) === '"' && substr($value, -1, 1) === '"') {
@@ -92,49 +90,49 @@ class DotEnv {
     return $value;
   }
 
-  /*
-  * Set an environment variable
-  *
-  * @param string $key
-  * @param mixed $value
-  *
-  * @return void
-  */
-  public static function set(string $key, $value) {
+  /**
+   * Set an environment variable
+   *
+   * @param string $key
+   * @param mixed $value
+   *
+   * @return void
+   */
+  public static function set(string $key, mixed $value): void {
     putenv(sprintf('%s=%s', $key, $value));
     $_ENV[$key] = $value;
     $_SERVER[$key] = $value;
   }
 
-  /*
-  * Check if an environment variable exists
-  *
-  * @param string $key
-  *
-  * @return bool
-  */
-  public static function has(string $key) {
+  /**
+   * Check if an environment variable exists
+   *
+   * @param string $key
+   *
+   * @return bool
+   */
+  public static function has(string $key): bool {
     return getenv($key) !== false;
   }
 
-  /*
-  * Clear an environment variable
-  *
-  * @param string $key
-  *
-  * @return void
-  */
-  public static function clear(string $key) {
+  /**
+   * Clear an environment variable
+   *
+   * @param string $key
+   *
+   * @return void
+   */
+  public static function clear(string $key): void {
     putenv($key);
     unset($_ENV[$key], $_SERVER[$key]);
   }
 
-  /*
-  * Get all environment variables
-  *
-  * @return array
-  */
-  public static function all() {
+  /**
+   * Get all environment variables
+   *
+   * @return array
+   */
+  public static function all(): array {
     return $_ENV;
   }
 }
