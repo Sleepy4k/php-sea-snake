@@ -35,7 +35,7 @@ class Middleware {
    * @return Closure
    */
   private function createLayer(Closure $nextLayer, MiddlewareInterface $layer): Closure {
-    return function (Request $request) use ($nextLayer, $layer): mixed {
+    return function (Request $request) use ($nextLayer, $layer) {
       return $layer->handle($request, $nextLayer);
     };
   }
@@ -48,7 +48,7 @@ class Middleware {
    *
    * @return mixed
    */
-  public function handle(Request $request, Closure $core): mixed {
+  public function handle(Request $request, Closure $core) {
     $next = array_reduce(
       $this->layers,
       function (Closure $nextLayer, MiddlewareInterface $layer): Closure {
