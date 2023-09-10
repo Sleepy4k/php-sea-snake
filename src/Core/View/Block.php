@@ -471,6 +471,7 @@ class Block {
     list($namespace, $view_path) = (count($expl) > 1) ? $expl : ['', $expl[0]];
 
     $path = $this->getDirectory($namespace) . '/' . $view_path . '.' . $this->getViewExtension();
+
     return $path;
   }
 

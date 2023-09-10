@@ -2,32 +2,19 @@
 
 namespace Snake\Core\View;
 
-use Snake\Core\View\Block;
-
-class Sea {
-  protected $block;
-
-  /*
-  * Constructor
-  *
-  * @param string $view_dir
-  * @param string $view_ext
-  *
-  * @return void
-  */
-  public function __construct(string $view_dir = '', string $view_ext = '.sea.php') {
-    $this->block = new Block($view_dir, $view_ext);
-  }
-
-  /*
-  * Render a view
-  *
-  * @param string $view
-  * @param array $data
-  *
-  * @return void
-  */
-  public function render(string $view = '', array $data = []) {
-    $this->block->render($view, $data);
+final class Sea extends Block {
+  /**
+   * Echo the rendered view.
+   *
+   * @param string $dir
+   * @param string $view
+   * @param array $data
+   * @param string $ext
+   *
+   * @return void
+   */
+  public static function view(string $dir = '', string $view = '', array $data = [], string $ext = 'sea.php'): void {
+    $block = new Block($dir, $ext);
+    echo $block->render($view, $data);
   }
 }
