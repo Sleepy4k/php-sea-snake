@@ -1,14 +1,14 @@
 <?php
 
 if (!function_exists('formatFileBytes')) {
-  /*
-  * Format file bytes
-  *
-  * @param int $bytes
-  * @param int $precision
-  *
-  * @return string
-  */
+  /**
+   * Format file bytes
+   *
+   * @param int $bytes
+   * @param int $precision
+   *
+   * @return string
+   */
   function formatFileBytes(int $bytes = 0, int $precision = 2): string {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
