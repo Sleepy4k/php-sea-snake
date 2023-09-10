@@ -65,7 +65,7 @@ class DotEnv {
    *
    * @return mixed
    */
-  public static function get(string $key, mixed $default = null): mixed {
+  public static function get(string $key, $default = null) {
     $value = getenv($key);
 
     if ($value === false) {
@@ -98,7 +98,7 @@ class DotEnv {
    *
    * @return void
    */
-  public static function set(string $key, mixed $value): void {
+  public static function set(string $key, $value): void {
     putenv(sprintf('%s=%s', $key, $value));
     $_ENV[$key] = $value;
     $_SERVER[$key] = $value;

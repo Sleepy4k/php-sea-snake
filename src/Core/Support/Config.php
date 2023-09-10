@@ -11,7 +11,7 @@ class Config {
    *
    * @return mixed
    */
-  public static function get(string $file = 'app', string $variable = 'name'): mixed {
+  public static function get(string $file = 'app', string $variable = 'name') {
     $file = strtolower($file);
 
     if (file_exists(basepath() . '/config/' . $file . '.config.php')) {
