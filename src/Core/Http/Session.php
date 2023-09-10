@@ -21,7 +21,7 @@ class Session {
    *
    * @return mixed
    */
-  public static function get(string $name = ''): mixed {
+  public static function get(string $name = '') {
     return $_SESSION[$name];
   }
 
@@ -33,7 +33,7 @@ class Session {
    *
    * @return mixed
    */
-  public static function set(string $name, mixed $value): mixed {
+  public static function set(string $name, mixed $value) {
     return $_SESSION[$name] = $value;
   }
 
