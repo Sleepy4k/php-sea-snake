@@ -23,11 +23,12 @@ if (!function_exists('env')) {
    * @param string $key
    * @param mixed $default
    * @param string $path
+   * @param string $file
    *
    * @return mixed
    */
-  function env(string $key, $default, string $path = __DIR__ . '/../../../../..') {
-    $env = new DotEnv($path);
+  function env(string $key, mixed $default, string $path = __DIR__ . '/../../../../..', string $file = '.env') {
+    $env = new DotEnv($path, $file);
 
     return $env->get($key, $default);
   }

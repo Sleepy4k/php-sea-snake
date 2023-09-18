@@ -2,24 +2,24 @@
 
 namespace Snake\Core\Support;
 
-class Config {
+final class Config {
   /**
    * Get a config value
    *
-   * @param string $file
-   * @param string $variable
+   * @param string $path
    *
    * @return mixed
    */
-  public static function get(string $file = 'app', string $variable = 'name') {
-    $file = strtolower($file);
+  public static function get(string $file = 'app', string $variable = 'name')
+  {
+    if (!file_exists(basepath() . '/config/' . $file . '.config.php')) {
+      return null;
+    }
 
-    if (file_exists(basepath() . '/config/' . $file . '.config.php')) {
-      $config = require basepath() . '/config/' . $file . '.config.php';
+    $config = require basepath() . '/config/' . $file . '.config.php';
 
-      if (isset($config[$variable])) {
-        return $config[$variable];
-      }
+    if (isset($config[$variable])) {
+      return $config[$variable];
     }
 
     return null;

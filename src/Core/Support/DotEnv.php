@@ -2,7 +2,7 @@
 
 namespace Snake\Core\Support;
 
-class DotEnv {
+final class DotEnv {
   /**
    * Path to .env file
    *
@@ -15,20 +15,28 @@ class DotEnv {
    *
    * @param string $path
    */
-  public function __construct(string $path = '') {
+  public function __construct(string $path = '', string $file = '.env') {
     if ($path === null) {
       $path = getcwd();
     }
 
     $this->path = rtrim($path, '/');
 
-    if (!is_readable($this->path . '/.env')) {
-      throw new \InvalidArgumentException(
-        sprintf('%s does not exist', $this->path . '/.env')
-      );
+    if (!is_readable($this->path . '/' . $file)) {
+      if (Config::get('app', 'env') === 'production' && Config::get('app', 'debug')) {
+        throw new \InvalidArgumentException(
+          sprintf('%s does not exist', $this->path . '/' . $file)
+        );
+      } else if (Config::get('app', 'debug')) {
+        throw new \InvalidArgumentException(
+          sprintf('%s does not exist', $this->path . '/' . $file)
+        );
+      } else {
+        return [];
+      }
     }
 
-    $this->load();
+    $this->load($file);
   }
 
   /**
@@ -36,8 +44,8 @@ class DotEnv {
    *
    * @return void
    */
-  protected function load(): void {
-    $lines = file($this->path . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  protected function load($file): void {
+    $lines = file($this->path . '/' . $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
       if (strpos(trim($line), '#') === 0) {
@@ -65,7 +73,7 @@ class DotEnv {
    *
    * @return mixed
    */
-  public static function get(string $key, $default = null) {
+  public static function get(string $key, mixed $default = null): mixed {
     $value = getenv($key);
 
     if ($value === false) {
@@ -98,7 +106,7 @@ class DotEnv {
    *
    * @return void
    */
-  public static function set(string $key, $value): void {
+  public static function set(string $key, mixed $value): void {
     putenv(sprintf('%s=%s', $key, $value));
     $_ENV[$key] = $value;
     $_SERVER[$key] = $value;
