@@ -18,4 +18,15 @@ if (!function_exists('formatFileBytes')) {
 
     return round($bytes, $precision) . ' ' . $units[$pow];
   }
+
+  /**
+   * Get path to the asset.
+   * 
+   * @param string $path
+   * 
+   * @return string
+   */
+  function asset(string $path): string {
+    return baseurl() . $path;
+  }
 }
