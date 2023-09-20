@@ -7,12 +7,13 @@ if (!function_exists('config')) {
   /**
    * Get a config value
    *
-   * @param string $path
+   * @param string $file
+   * @param string $name
    *
    * @return mixed
    */
-  function config(string $path = '') {
-    return Config::get($path);
+  function config(string $file = 'app', string $name = 'name') {
+    return Config::get($file, $name);
   }
 }
 
