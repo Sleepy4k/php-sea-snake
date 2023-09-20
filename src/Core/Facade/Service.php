@@ -74,17 +74,15 @@ class Service {
    */
   private function handleOutOfRoute(bool $routeMatch): int {
     if ($routeMatch) {
-      Sea::view(__DIR__ . '/../../View', 'error', [
-        'title' => config('app', 'name'),
-        'message' => 'Method Not Allowed 405'
+      Sea::view('errors.405', [
+        'message' => 'This method is not allowed for this route.'
       ]);
 
       return 0;
     }
 
-    Sea::view(__DIR__ . '/../../View', 'error', [
-      'title' => config('app', 'name'),
-      'message' => 'Not Found 404'
+    Sea::view('errors.404', [
+      'message' => 'The requested URL was not found on this server.'
     ]);
 
     return 0;
