@@ -73,7 +73,7 @@ final class DotEnv {
    *
    * @return mixed
    */
-  public static function get(string $key, mixed $default = null): mixed {
+  public static function get(string $key, mixed $default = null) {
     $value = getenv($key);
 
     if ($value === false) {

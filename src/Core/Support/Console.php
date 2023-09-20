@@ -59,7 +59,7 @@ class Console {
         $location = explode(':', $location);
         $host = $location[0];
         $port = $location[1] ?? 8000;
-        $host = ($host == 'localhost') ? 'localhost' : '0.0.0.0';
+        $host = (string) $host;
         $port = (int) $port;
         shell_exec("php -S {$host}:{$port} -t public");
         break;
