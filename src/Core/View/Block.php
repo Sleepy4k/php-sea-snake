@@ -2,11 +2,31 @@
 
 namespace Snake\Core\View;
 
+/**
+ * Block View Engine for Snake Framework
+ * 
+ * Credit to:
+ * https://github.com/emsifa/Block
+ */
 class Block {
+  /**
+   * Parent replacer
+   */
   const PARENT_REPLACER = '<!--block::parent-->';
+
+  /**
+   * Namespace separator
+   */
   const NAMESPACE_SEPARATOR = '::';
 
+  /**
+   * Append type
+   */
   const APPEND = 'append';
+
+  /**
+   * Prepend type
+   */
   const PREPEND = 'prepend';
 
   /**
@@ -77,8 +97,13 @@ class Block {
    */
   protected $directory_namespaces = [];
 
-  public function __construct($directory, $extension = 'php')
-  {
+  /**
+   * Constructor
+   *
+   * @param string $directory
+   * @param string $extension
+   */
+  public function __construct($directory, $extension = 'php') {
     $this->setDirectory($directory);
     $this->setViewExtension($extension);
   }
@@ -89,8 +114,7 @@ class Block {
    * @param string $directory
    * @param string $namespace
    */
-  public function setDirectory($directory, $namespace = '')
-  {
+  public function setDirectory($directory, $namespace = '') {
     $this->directory_namespaces[trim($namespace)] = $directory;
   }
 
@@ -100,8 +124,7 @@ class Block {
    * @param string $directory
    * @param string $namespace
    */
-  public function getDirectory($namespace = '')
-  {
+  public function getDirectory($namespace = '') {
     $namespace = trim($namespace);
     return array_key_exists($namespace, $this->directory_namespaces) ? $this->directory_namespaces[$namespace] : __DIR__;
   }
@@ -111,8 +134,7 @@ class Block {
    *
    * @param string $extension
    */
-  public function setViewExtension($extension)
-  {
+  public function setViewExtension($extension) {
     $this->extension = $extension;
   }
 
@@ -120,8 +142,7 @@ class Block {
    * Get view extension
    * @return string $extension
    */
-  public function getViewExtension()
-  {
+  public function getViewExtension() {
     return $this->extension;
   }
 
@@ -130,8 +151,7 @@ class Block {
    *
    * @param string $view
    */
-  public function has($view)
-  {
+  public function has($view) {
     $path = $this->resolvePath($view);
     return is_file($path);
   }
@@ -142,8 +162,7 @@ class Block {
    * @param string $key
    * @param mixed $value
    */
-  public function share($key, $value)
-  {
+  public function share($key, $value) {
     $this->shared_data[$key] = $value;
   }
 
@@ -152,8 +171,7 @@ class Block {
    *
    * @param string|array $views
    */
-  public function composer($views, callable $composer)
-  {
+  public function composer($views, callable $composer) {
     $views = (array) $views;
     foreach ($views as $view) {
       if (!isset($this->composers[$view])) {
@@ -169,10 +187,10 @@ class Block {
    *
    * @param string $view
    * @param array $__data
+   * 
    * @return string render result
    */
-  public function render($view, array $__data = array())
-  {
+  public function render($view, array $__data = array()): string {
     $this->render_data = $__data;
 
     $__data = $this->resolveData($view, $__data);
@@ -204,8 +222,7 @@ class Block {
    * @param string $view
    * @param array $__data
    */
-  public function insert($view, array $__data = array())
-  {
+  public function insert($view, array $__data = array()) {
     $__data = $this->resolveData($view, $__data);
     $this->makeSureViewExists($view);
     $path = $this->resolvePath($view);
@@ -225,8 +242,7 @@ class Block {
    * @param string $view
    * @param array $__data
    */
-  public function put($view, array $__data = array())
-  {
+  public function put($view, array $__data = array()) {
     return $this->insert($view, $__data);
   }
 
@@ -235,8 +251,7 @@ class Block {
    *
    * @param string $view
    */
-  public function extend($view, array $data = [])
-  {
+  public function extend($view, array $data = []) {
     $this->extend = $view;
     $this->extend_data = $data;
   }
@@ -246,10 +261,10 @@ class Block {
    *
    * @param string $block_name
    */
-  public function section($block_name, $type = null)
-  {
+  public function section($block_name, $type = null) {
     $this->sections[] = ['name' => $block_name, 'type' => $type];
     ob_start();
+
     if ($type === static::APPEND) {
       echo $this->parent();
     }
@@ -260,8 +275,7 @@ class Block {
    *
    * @param string $block_name
    */
-  public function append($block_name)
-  {
+  public function append($block_name) {
     $this->section($block_name, static::APPEND);
   }
 
@@ -270,8 +284,7 @@ class Block {
    *
    * @param string $block_name
    */
-  public function prepend($block_name)
-  {
+  public function prepend($block_name) {
     $this->section($block_name, static::PREPEND);
   }
 
@@ -280,11 +293,11 @@ class Block {
    *
    * @param string $key
    */
-  public function once($key)
-  {
+  public function once($key) {
     if ($this->once_key) {
       throw new \Exception("'once' cannot be nested.");
     }
+
     $this->once_key = $key;
     ob_start();
   }
@@ -294,8 +307,7 @@ class Block {
    *
    * @param string $key
    */
-  public function endonce()
-  {
+  public function endonce() {
     $once_key = $this->once_key;
 
     if (!$once_key) {
@@ -313,8 +325,7 @@ class Block {
   /**
    * Alias of static::PARENT_REPLACER
    */
-  public function parent()
-  {
+  public function parent() {
     return static::PARENT_REPLACER;
   }
 
@@ -323,8 +334,7 @@ class Block {
    *
    * @param string $block_name
    */
-  public function stop()
-  {
+  public function stop() {
     $block = array_pop($this->sections);
 
     if (!array_key_exists($block['name'], $this->blocks)) {
@@ -341,8 +351,7 @@ class Block {
   /**
    * Close and printing section
    */
-  public function show()
-  {
+  public function show() {
     $block = $this->sections[count($this->sections) - 1];
     $this->stop();
     echo $this->get($block['name']);
@@ -354,8 +363,7 @@ class Block {
    * @param string $view
    * @param array $data
    */
-  public function component($view, array $data = array())
-  {
+  public function component($view, array $data = array()) {
     $this->components[] = [
       'view' => $view,
       'data' => $data,
@@ -371,14 +379,15 @@ class Block {
    * @param string $view
    * @param array $data
    */
-  public function endcomponent()
-  {
+  public function endcomponent() {
     $component = array_pop($this->components);
+
     if (!$component) {
       throw new \Exception("No active component in this block. Make sure you have open component using 'component' method.", 1);
     }
 
     $component['data']['slot'] = ob_get_clean();
+
     return $this->insert($component['view'], $component['data']);
   }
 
@@ -387,8 +396,7 @@ class Block {
    *
    * @param string $slot_name
    */
-  public function slot($slot_name)
-  {
+  public function slot($slot_name) {
     $count_components = count($this->components);
     if (0 === $count_components) {
       throw new \Exception("Slot can only used inside component definition.", 1);
@@ -403,15 +411,16 @@ class Block {
   /**
    * Close slot
    */
-  public function endslot()
-  {
+  public function endslot() {
     $count_components = count($this->components);
+
     if (0 === $count_components) {
       throw new \Exception("Slot can only used inside component definition.", 1);
     }
 
     $index = $count_components - 1;
     $slot_name = array_pop($this->components[$index]['slots']);
+
     if (!$slot_name) {
       throw new \Exception("No active slot in this block. Make sure you have open slot using 'slot' method.", 1);
     }
@@ -423,34 +432,46 @@ class Block {
    * Get section
    *
    * @param string $block_name
+   * 
    * @return string
    */
-  public function get($block_name)
-  {
+  public function get($block_name): string {
     $stacks = array_key_exists($block_name, $this->blocks) ? $this->blocks[$block_name] : null;
+
     return $stacks ? $this->renderStacks($stacks) : '';
+  }
+
+  /**
+   * Set section
+   * 
+   * @param string $block_name
+   * @param string $data
+   */
+  public function set($block_name, $data) {
+    $this->blocks[$block_name] = [$data];
   }
 
   /**
    * Escaping html
    *
    * @param string $value
+   * 
    * @return string
    */
-  public function escape($value)
-  {
+  public function escape(string $value): string {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
   }
 
   /**
-   * Render block stacks
+   * Render stacks
    *
    * @param array $stacks
+   * 
    * @return string
    */
-  protected function renderStacks(array $stacks)
-  {
+  protected function renderStacks(array $stacks): string {
     $current = array_pop($stacks);
+
     if (count($stacks)) {
       return str_replace(static::PARENT_REPLACER, $current, $this->renderStacks($stacks));
     } else {
@@ -462,10 +483,10 @@ class Block {
    * Resolve view directory
    *
    * @param string $view
+   * 
    * @return string view directory
    */
-  protected function resolvePath($view)
-  {
+  protected function resolvePath(string $view): string {
     $view = str_replace('.', '/', $view);
     $expl = explode(static::NAMESPACE_SEPARATOR, $view);
     list($namespace, $view_path) = (count($expl) > 1) ? $expl : ['', $expl[0]];
@@ -475,19 +496,32 @@ class Block {
     return $path;
   }
 
-  protected function makeSureViewExists($view)
-  {
+  /**
+   * Make sure view exists
+   *
+   * @param string $view
+   * 
+   * @throws \Exception
+   */
+  protected function makeSureViewExists(string $view) {
     if (!$this->has($view)) {
       throw new \Exception("View {$view} is not exists");
     }
   }
 
-  protected function makeGetter(array $data)
-  {
+  /**
+   * Make getter
+   *
+   * @param array $data
+   * 
+   * @return callable
+   */
+  protected function makeGetter(array $data) {
     return function ($key, $default = null) use ($data) {
       if (array_key_exists($key, $data)) {
         return $data[$key];
       }
+
       foreach (explode('.', $key) as $segment) {
         if (is_array($data) && array_key_exists($segment, $data)) {
           $data = $data[$segment];
@@ -495,14 +529,23 @@ class Block {
           return $default;
         }
       }
+
       return $data;
     };
   }
 
-  protected function resolveData($view, array $data)
-  {
+  /**
+   * Resolve data
+   *
+   * @param string $view
+   * @param array $data
+   * 
+   * @return array
+   */
+  protected function resolveData(string $view, array $data): array {
     $data = array_merge($this->shared_data, $this->render_data, $data);
     $composers = isset($this->composers[$view]) ? $this->composers[$view] : [];
+
     foreach ($composers as $composer) {
       $data = array_merge($data, (array) call_user_func_array($composer, [$data, $view]));
     }
