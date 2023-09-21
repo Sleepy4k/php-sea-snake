@@ -13,7 +13,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function query(string $sql = '', array $params = []) {
+  public static function query(string $sql, array $params = []) {
     return static::builder()->query($sql, $params);
   }
 
@@ -24,7 +24,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function all(string $table = '') {
+  public static function all(string $table) {
     return static::builder()->all($table);
   }
 
@@ -36,7 +36,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function get(string $table = '', array $where = []) {
+  public static function get(string $table, array $where = []) {
     return static::builder()->get($table, $where);
   }
 
@@ -48,7 +48,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function insert(string $table = '', array $data = []) {
+  public static function insert(string $table, array $data = []) {
     return static::builder()->insert($table, $data);
   }
 
@@ -61,7 +61,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function update(string $table = '', array $data = [], array $where = []) {
+  public static function update(string $table, array $data = [], array $where = []) {
     return static::builder()->update($table, $data, $where);
   }
 
@@ -73,7 +73,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function delete(string $table = '', array $where = []) {
+  public static function delete(string $table, array $where = []) {
     return static::builder()->delete($table, $where);
   }
 
