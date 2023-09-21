@@ -21,16 +21,30 @@ class Builder {
    * @throws PDOException
    */
   public function __construct() {
+    $table = config('database', 'default');
+
     if ($this->pdo === null) {
       try {
-        for ($i = 0; $i < sizeof(config('database', 'connections')); $i++) {
-          if (config('database', 'default') === config('database', 'connections')[$i]['driver']) {
-            $this->pdo = new PDO(
-              config('database', 'connections')[$i]['driver'] . ':host=' . config('database', 'connections')[$i]['host'] . ';dbname=' . config('database', 'connections')[$i]['name'],
-              config('database', 'connections')[$i]['username'],
-              config('database', 'connections')[$i]['password']
-            );
-          }
+        if (config('database', 'default') === 'mysql') {
+          $this->pdo = new PDO(
+            'mysql:host=' . config('database', 'connections')[$table]['host'] . ';dbname=' . config('database', 'connections')[$table]['name'] . ';charset=utf8',
+            config('database', 'connections')[$table]['username'],
+            config('database', 'connections')[$table]['password']
+          );
+        } else if (config('database', 'default') === 'sqlite') {
+          $this->pdo = new PDO(
+            'sqlite:' . config('database', 'connections')[$table]['name']
+          );
+        } else if (config('database', 'default') === 'pgsql') {
+          $this->pdo = new PDO(
+            'pgsql:host=' . config('database', 'connections')[$table]['host'] . ';port=' . config('database', 'connections')[$table]['port'] . ';dbname=' . config('database', 'connections')[$table]['name'] . ';user=' . config('database', 'connections')[$table]['username'] . ';password=' . config('database', 'connections')[$table]['password']
+          );
+        } else if (config('database', 'default') === 'sqlsrv') {
+          $this->pdo = new PDO(
+            'sqlsrv:Server=' . config('database', 'connections')[$table]['host'] . ';Database=' . config('database', 'connections')[$table]['name'] . ';ConnectionPooling=0',
+            config('database', 'connections')[$table]['username'],
+            config('database', 'connections')[$table]['password']
+          );
         }
       } catch (PDOException $e) {
         die($e->getMessage());
@@ -55,11 +69,15 @@ class Builder {
    *
    * @return object
    */
-  public function query(string $sql = '', array $params = []) {
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($params);
+  public function query(string $sql, array $params = []) {
+    if (count($params) > 0) {
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute($params);
 
-    return $stmt;
+      return $stmt;
+    } else {
+      return $this->pdo->query($sql);
+    }
   }
 
   /**
@@ -69,7 +87,7 @@ class Builder {
    *
    * @return object
    */
-  public function all(string $table = '') {
+  public function all(string $table) {
     $stmt = $this->pdo->prepare('SELECT * FROM ' . $table);
     $stmt->execute();
 
@@ -84,23 +102,27 @@ class Builder {
    *
    * @return object
    */
-  public function get(string $table = '', array $where = []) {
-    $sql = 'SELECT * FROM ' . $table . ' WHERE ';
-    $i = 0;
+  public function get(string $table, array $where = []) {
+    if (count($where) > 0) {
+      $sql = 'SELECT * FROM ' . $table . ' WHERE ';
+      $i = 0;
 
-    foreach ($where as $key => $value) {
-      $i++;
-      $sql .= $key . ' = :' . $key;
+      foreach ($where as $key => $value) {
+        $i++;
+        $sql .= $key . ' = :' . $key;
 
-      if ($i < count($where)) {
-        $sql .= ' AND ';
+        if ($i < count($where)) {
+          $sql .= ' AND ';
+        }
       }
+
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute($where);
+
+      return $stmt;
+    } else {
+      return $this->all($table);
     }
-
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($where);
-
-    return $stmt;
   }
 
   /**
@@ -111,36 +133,41 @@ class Builder {
    *
    * @return object
    */
-  public function insert(string $table = '', array $data = []) {
-    $sql = 'INSERT INTO ' . $table . ' (';
-    $i = 0;
+  public function insert(string $table, array $data = []) {
+    if (count($data) > 0) {
+      $sql = 'INSERT INTO ' . $table . ' (';
+      $i = 0;
 
-    foreach ($data as $key => $value) {
-      $i++;
-      $sql .= $key;
+      foreach ($data as $key => $value) {
+        $i++;
+        $sql .= $key;
 
-      if ($i < count($data)) {
-        $sql .= ', ';
+        if ($i < count($data)) {
+          $sql .= ', ';
+        }
       }
-    }
 
-    $sql .= ') VALUES (';
-    $i = 0;
+      $sql .= ') VALUES (';
+      $i = 0;
 
-    foreach ($data as $key => $value) {
-      $i++;
-      $sql .= ':' . $key;
+      foreach ($data as $key => $value) {
+        $i++;
+        $sql .= ':' . $key;
 
-      if ($i < count($data)) {
-        $sql .= ', ';
+        if ($i < count($data)) {
+          $sql .= ', ';
+        }
       }
+
+      $sql .= ')';
+
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute($data);
+
+      return $stmt;
+    } else {
+      return false;
     }
-
-    $sql .= ')';
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($data);
-
-    return $stmt;
   }
 
   /**
@@ -152,35 +179,39 @@ class Builder {
    *
    * @return object
    */
-  public function update(string $table = '', array $data = [], array $where = []) {
-    $sql = 'UPDATE ' . $table . ' SET ';
-    $i = 0;
+  public function update(string $table, array $data = [], array $where = []) {
+    if (count($data) > 0) {
+      $sql = 'UPDATE ' . $table . ' SET ';
+      $i = 0;
 
-    foreach ($data as $key => $value) {
-      $i++;
-      $sql .= $key . ' = :' . $key;
+      foreach ($data as $key => $value) {
+        $i++;
+        $sql .= $key . ' = :' . $key;
 
-      if ($i < count($data)) {
-        $sql .= ', ';
+        if ($i < count($data)) {
+          $sql .= ', ';
+        }
       }
-    }
 
-    $sql .= ' WHERE ';
-    $i = 0;
+      $sql .= ' WHERE ';
+      $i = 0;
 
-    foreach ($where as $key => $value) {
-      $i++;
-      $sql .= $key . ' = :' . $key;
+      foreach ($where as $key => $value) {
+        $i++;
+        $sql .= $key . ' = :' . $key;
 
-      if ($i < count($where)) {
-        $sql .= ' AND ';
+        if ($i < count($where)) {
+          $sql .= ' AND ';
+        }
       }
+
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute(array_merge($data, $where));
+
+      return $stmt;
+    } else {
+      return false;
     }
-
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute(array_merge($data, $where));
-
-    return $stmt;
   }
 
   /**
@@ -191,23 +222,27 @@ class Builder {
    *
    * @return object
    */
-  public function delete(string $table = '', array $where = []) {
-    $sql = 'DELETE FROM ' . $table . ' WHERE ';
-    $i = 0;
+  public function delete(string $table, array $where = []) {
+    if (count($where) > 0) {
+      $sql = 'DELETE FROM ' . $table . ' WHERE ';
+      $i = 0;
 
-    foreach ($where as $key => $value) {
-      $i++;
-      $sql .= $key . ' = :' . $key;
+      foreach ($where as $key => $value) {
+        $i++;
+        $sql .= $key . ' = :' . $key;
 
-      if ($i < count($where)) {
-        $sql .= ' AND ';
+        if ($i < count($where)) {
+          $sql .= ' AND ';
+        }
       }
-    }
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($where);
-    
-    return $stmt;
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute($where);
+
+      return $stmt;
+    } else {
+      return false;
+    }
   }
 
   /**
