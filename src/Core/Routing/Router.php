@@ -257,6 +257,60 @@ class Router {
   }
 
   /**
+   * Check if a route exists
+   *
+   * @param string $name
+   *
+   * @return bool
+   */
+  public function hasRoute(string $name): bool {
+    foreach ($this->routes as $route) {
+      if ($route['name'] == $name) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Get a route
+   *
+   * @param string $name
+   *
+   * @return array|null
+   */
+  public function getRoute(string $name): ?array {
+    foreach ($this->routes as $route) {
+      if ($route['name'] == $name) {
+        return $route;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Check if the current route is the given route
+   *
+   * @param string $name
+   *
+   * @return bool
+   */
+  public function isRoute(string $name): bool {
+    $route = $this->getRoute($name);
+
+    if (!is_null($route)) {
+      $path = preg_replace('/{(\w+)}/', '([\w-]*)', $route['path']);
+      $path = str_replace('/', '\/', $path);
+
+      return preg_match('/^' . $path . '$/', $_SERVER['REQUEST_URI']);
+    }
+
+    return false;
+  }
+
+  /**
    * Group routes
    *
    * @param Closure $group
