@@ -2,7 +2,9 @@
 
 namespace Snake\Core\Support;
 
-class Password {
+use Snake\Interface\Support\IPassword;
+
+class Password implements IPassword {
   /**
    * Hash a password
    *
@@ -10,7 +12,7 @@ class Password {
    *
    * @return string
    */
-  public static function make(string $password = ''): string {
+  public static function make(string $password): string {
     return password_hash($password, config('password', 'algo'),
       array(
         'cost' => config('password', 'cost')

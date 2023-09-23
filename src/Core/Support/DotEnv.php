@@ -2,7 +2,9 @@
 
 namespace Snake\Core\Support;
 
-final class DotEnv {
+use Snake\Interface\Support\IDotEnv;
+
+final class DotEnv implements IDotEnv {
   /**
    * Path to .env file
    *
@@ -14,8 +16,11 @@ final class DotEnv {
    * Create a new dotenv instance.
    *
    * @param string $path
+   * @param string $file
+   * 
+   * @return void
    */
-  public function __construct(string $path = '', string $file = '.env') {
+  public function __construct(string $path, string $file = '.env') {
     if ($path === null) {
       $path = getcwd();
     }
@@ -42,9 +47,11 @@ final class DotEnv {
   /**
    * Load environment file and set values to $_ENV and $_SERVER superglobals
    *
+   * @param string $file
+   * 
    * @return void
    */
-  protected function load($file): void {
+  public function load(string $file): void {
     $lines = file($this->path . '/' . $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
@@ -73,7 +80,7 @@ final class DotEnv {
    *
    * @return mixed
    */
-  public static function get(string $key, mixed $default = null) {
+  public static function get(string $key, mixed $default = null): mixed {
     $value = getenv($key);
 
     if ($value === false) {

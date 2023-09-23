@@ -2,7 +2,9 @@
 
 namespace Snake\Core\Support;
 
-class Hash {
+use Snake\Interface\Support\IHash;
+
+class Hash implements IHash {
   /**
    * Hash a given value
    *
@@ -11,7 +13,7 @@ class Hash {
    *
    * @return string
    */
-  public static function make(string $value = '', string $salt = ''): string {
+  public static function make(string $value, string $salt = ''): string {
     return hash('sha256', $value . $salt);
   }
 

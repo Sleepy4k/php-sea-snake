@@ -2,7 +2,9 @@
 
 namespace Snake\Core\Support;
 
-final class Config {
+use Snake\Interface\Support\IConfig;
+
+final class Config implements IConfig {
   /**
    * Get a config value
    *
@@ -11,7 +13,7 @@ final class Config {
    *
    * @return mixed
    */
-  public static function get(string $file = 'app', string $variable = 'name') {
+  public static function get(string $file = 'app', string $variable = 'name'): mixed {
     if (!file_exists(basepath() . '/config/' . $file . '.config.php')) {
       return null;
     }
