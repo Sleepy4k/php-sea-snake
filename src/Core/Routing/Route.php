@@ -3,8 +3,9 @@
 namespace Snake\Core\Routing;
 
 use Snake\Core\Facade\App;
+use Snake\Interface\Routing\IRoute;
 
-final class Route {
+final class Route implements IRoute {
   /**
    * Insert route with any method to routes
    * 
@@ -14,7 +15,7 @@ final class Route {
    * 
    * @return Router
    */
-  public static function any(string $path, $action = null, $middleware = null): Router {
+  public static function any(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->any($path, $action, $middleware);
   }
 
@@ -27,7 +28,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function get(string $path, $action = null, $middleware = null): Router {
+  public static function get(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->get($path, $action, $middleware);
   }
 
@@ -40,7 +41,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function post(string $path, $action = null, $middleware = null): Router {
+  public static function post(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->post($path, $action, $middleware);
   }
 
@@ -53,7 +54,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function put(string $path, $action = null, $middleware = null): Router {
+  public static function put(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->put($path, $action, $middleware);
   }
 
@@ -66,7 +67,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function patch(string $path, $action = null, $middleware = null): Router {
+  public static function patch(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->patch($path, $action, $middleware);
   }
 
@@ -79,7 +80,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function delete(string $path, $action = null, $middleware = null): Router {
+  public static function delete(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->delete($path, $action, $middleware);
   }
 
@@ -92,7 +93,7 @@ final class Route {
    *
    * @return Router
    */
-  public static function options(string $path, $action = null, $middleware = null): Router {
+  public static function options(string $path, array|string|null $action = null, array|string|null $middleware = null): Router {
     return static::router()->options($path, $action, $middleware);
   }
 
@@ -114,14 +115,14 @@ final class Route {
    *
    * @return Router
    */
-  public static function middleware($middleware): Router {
+  public static function middleware(array|string$middleware): Router {
     return static::router()->middleware($middleware);
   }
 
   /**
-   * Add group to routes
+   * Add controller to routes
    *
-   * @param callable $callback
+   * @param string $name
    *
    * @return Router
    */
@@ -130,16 +131,58 @@ final class Route {
   }
 
   /**
-   * Load all routes
+   * Add namespace to routes
+   *
+   * @param callable $callback
+   *
+   * @return Router
+   */
+  public static function namespace(string $namespace): Router {
+    return static::router()->namespace($namespace);
+  }
+
+  /**
+   * Add name to routes
+   *
+   * @param string $name
    *
    * @return void
    */
-  public static function setRoute(): void {
-    require_once basepath() . '/route/web.php';
+  public static function as(string $name): void {
+    static::router()->as($name);
+  }
 
-    static::router()->prefix('/api')->group(function () {
-      require_once basepath() . '/route/api.php';
-    });
+  /**
+   * Check if a route exists
+   *
+   * @param string $name
+   *
+   * @return bool
+   */
+  public static function hasRoute(string $name): bool {
+    return static::router()->hasRoute($name);
+  }
+
+  /**
+   * Get a route
+   *
+   * @param string $name
+   *
+   * @return array|null
+   */
+  public static function getRoute(string $name): array|null {
+    return static::router()->getRoute($name);
+  }
+
+  /**
+   * Check if the current route is the given route
+   *
+   * @param string $name
+   *
+   * @return bool
+   */
+  public static function isRoute(string $name): bool {
+    return static::router()->isRoute($name);
   }
 
   /**

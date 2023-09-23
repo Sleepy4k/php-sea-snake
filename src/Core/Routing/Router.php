@@ -3,8 +3,9 @@
 namespace Snake\Core\Routing;
 
 use Closure;
+use Snake\Interface\Routing\IRouter;
 
-class Router {
+class Router implements IRouter {
   /**
    * The routes
    *
@@ -34,6 +35,13 @@ class Router {
   protected $middleware;
 
   /**
+   * Namespace for routes
+   *
+   * @var string|null $namespace
+   */
+  protected $namespace;
+
+  /**
    * Constructor
    *
    * @return void
@@ -55,8 +63,10 @@ class Router {
    */
   private function add(string $method, string $path, $action = null, $middleware = null): Router {
     if (is_array($action)) {
-      $controller = $action[0];
-      $function = $action[1];
+      $function = $action[0];
+      $controller = $action[1];
+    } else if (is_string($action) && str_contains($action, '@')) {
+      [$function, $controller] = explode('@', $action);
     } else {
       $controller = null;
       $function = $action;
@@ -71,7 +81,8 @@ class Router {
       'controller' => $controller,
       'function' => $function,
       'middleware' => $middleware,
-      'name' => null
+      'name' => null,
+      'namespace' => $this->namespace
     ];
 
     return $this;
@@ -232,8 +243,21 @@ class Router {
    *
    * @return void
    */
-  public function name(string $name): void {
+  private function name(string $name): void {
     $this->routes[count($this->routes) - 1]['name'] = $name;
+  }
+
+  /**
+   * Set the name for the next routes
+   *
+   * @param string $name
+   *
+   * @return Router
+   */
+  public function as(string $name): Router {
+    $this->name($name);
+
+    return $this;
   }
 
   /**
@@ -246,17 +270,6 @@ class Router {
   }
 
   /**
-   * Set the routes
-   *
-   * @param array $route
-   *
-   * @return void
-   */
-  public function setRoutes(array $route): void {
-    $this->routes = $route;
-  }
-
-  /**
    * Check if a route exists
    *
    * @param string $name
@@ -265,7 +278,7 @@ class Router {
    */
   public function hasRoute(string $name): bool {
     foreach ($this->routes as $route) {
-      if ($route['name'] == $name) {
+      if ($route['path'] == $name) {
         return true;
       }
     }
@@ -280,10 +293,10 @@ class Router {
    *
    * @return array|null
    */
-  public function getRoute(string $name): ?array {
+  public function getRoute(string $name): array|null {
     foreach ($this->routes as $route) {
-      if ($route['name'] == $name) {
-        return $route;
+      if ($route['path'] == $name) {
+        return baseurl() . $route['path'];
       }
     }
 
@@ -311,6 +324,19 @@ class Router {
   }
 
   /**
+   * Add namespace to routes
+   *
+   * @param string $namespace
+   *
+   * @return Router
+   */
+  public function namespace(string $namespace): Router {
+    $this->namespace = $namespace;
+
+    return $this;
+  }
+
+  /**
    * Group routes
    *
    * @param Closure $group
@@ -318,10 +344,10 @@ class Router {
    * @return void
    */
   public function group(Closure $group): void {
-    $tempController = $this->controller;
-    $tempPrefix = $this->prefix;
-    $tempMiddleware = $this->middleware;
-    $tempRoutes = $this->routes;
+    $originalController = $this->controller;
+    $originalPrefix = $this->prefix;
+    $originalMiddleware = $this->middleware;
+    $originalRoutes = $this->routes;
 
     $this->controller = null;
     $this->prefix = null;
@@ -329,22 +355,16 @@ class Router {
 
     $group();
 
-    foreach ($this->routes as $id => $route) {
-      if (!in_array($route, $tempRoutes)) {
-        if (!is_null($tempController)) {
-          $old = $this->routes[$id]['controller'];
-          $this->routes[$id]['controller'] = is_null($old) ? $tempController : $old;
+    foreach ($this->routes as &$route) {
+      if (!in_array($route, $originalRoutes)) {
+        $route['controller'] = $route['controller'] ?? $originalController;
+        
+        if (!is_null($originalPrefix)) {
+          $route['path'] = ($route['path'] != '/') ? preg_replace('/{(\w+)}/', '([\w-]*)', $originalPrefix) . $route['path'] : $originalPrefix;
         }
 
-        if (!is_null($tempPrefix)) {
-          $old = $this->routes[$id]['path'];
-          $prefix = preg_replace('/{(\w+)}/', '([\w-]*)', $tempPrefix);
-          $this->routes[$id]['path'] = ($old != '/') ? $prefix . $old : $prefix;
-        }
-
-        if (!empty($tempMiddleware)) {
-          $result = empty($this->middleware) ? $tempMiddleware : $this->middleware;
-          $this->routes[$id]['middleware'] = [...$result, ...$this->routes[$id]['middleware']];
+        if (!empty($originalMiddleware)) {
+          $route['middleware'] = array_merge($originalMiddleware, $route['middleware']);
         }
       }
     }
