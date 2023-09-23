@@ -2,7 +2,9 @@
 
 namespace Snake\Core\View;
 
-final class Sea extends Block {
+use Snake\Interface\View\ISea;
+
+final class Sea implements ISea {
   /**
    * Echo the rendered view.
    *
@@ -12,7 +14,7 @@ final class Sea extends Block {
    *
    * @return void
    */
-  public static function view(string $view = '', array $data = [], string $ext = 'sea.php'): void {
+  public static function view(string $view, array $data = [], string $ext = 'sea.php'): void {
     $block = new Block(basepath() . '/view/', $ext);
 
     if (!$block->has($view)) {
