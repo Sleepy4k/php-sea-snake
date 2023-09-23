@@ -3,8 +3,9 @@
 namespace Snake\Core\Model;
 
 use Snake\Core\Database\DB;
+use Snake\Interface\Model\IModel;
 
-class BaseModel {
+class BaseModel implements IModel {
   /**
    * The table name
    * 
@@ -32,23 +33,21 @@ class BaseModel {
   /**
    * Handle method calls
    * 
-   * @param string $method
-   * @param array $args
+   * @param string $sql
+   * @param array $params
    * 
    * @return object
    */
-  public static function query($sql, $params = []) {
+  public static function query(string $sql, array $params = []): object {
     return DB::query($sql, $params);
   }
 
   /**
    * Get all data from a table
    * 
-   * @param string $table
-   * 
    * @return object
    */
-  public static function all() {
+  public static function all(): object {
     return DB::all(static::$table);
   }
 
@@ -59,7 +58,7 @@ class BaseModel {
    * 
    * @return object
    */
-  public static function get(array $where = []) {
+  public static function get(array $where = []): object {
     return DB::get(static::$table, $where);
   }
 
@@ -71,7 +70,7 @@ class BaseModel {
    * 
    * @return object
    */
-  public static function find(string $id, array $where = []) {
+  public static function find(string $id, array $where = []): object {
     return DB::get(static::$table, array_merge($where, [static::$primaryKey => $id]));
   }
 
@@ -82,7 +81,7 @@ class BaseModel {
    * 
    * @return object
    */
-  public static function insert(array $data = []) {
+  public static function insert(array $data = []): object {
     return DB::insert(static::$table, $data);
   }
 
@@ -95,7 +94,7 @@ class BaseModel {
    * 
    * @return object
    */
-  public static function update(string $id, array $data = [], array $where = []) {
+  public static function update(string $id, array $data = [], array $where = []): object {
     return DB::update(static::$table, array_merge($data, [static::$primaryKey => $id]), $where);
   }
 
@@ -107,7 +106,7 @@ class BaseModel {
    * 
    * @return object
    */
-  public static function delete(string $id, array $where = []) {
+  public static function delete(string $id, array $where = []): object {
     return DB::delete(static::$table, array_merge($where, [static::$primaryKey => $id]));
   }
 
@@ -116,7 +115,7 @@ class BaseModel {
    * 
    * @return string
    */
-  public static function getTable() {
+  public static function getTable(): string {
     return static::$table;
   }
 }
