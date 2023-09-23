@@ -27,7 +27,10 @@
       "src/Helper/password.php",
       "src/Helper/redirect.php",
       "src/Helper/session.php",
-      "src/Helper/url.php"
+      "src/Helper/url.php",
+
+      "src/Exeception/ErrorHandler.php",
+      "src/Exeception/ExceptionHandler.php"
     ],
     "psr-4": {
       "Snake\\": "src/"
