@@ -4,5 +4,6 @@
 
 <?= $this->section('content') ?>
   <h2>503 - Service Unavailable</h2>
-  <p><?= $get('message', '') ?></p>
+  <h4><?= $get('message', '') ?></h4>
+  <p><?= $get('file', '') ?></p>
 <?= $this->stop() ?>
