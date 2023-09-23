@@ -29,8 +29,8 @@
       "src/Helper/session.php",
       "src/Helper/url.php",
 
-      "src/Exeception/ErrorHandler.php",
-      "src/Exeception/ExceptionHandler.php"
+      "src/Exception/ErrorHandler.php",
+      "src/Exception/ExceptionHandler.php"
     ],
     "psr-4": {
       "Snake\\": "src/"
