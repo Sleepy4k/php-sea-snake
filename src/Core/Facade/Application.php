@@ -121,7 +121,7 @@ class Application {
    * 
    * @throws Exception
    */
-  public function invoke($name, string $method, array $default = []) {
+  public function invoke(string|object $name, string $method, array $default = []): mixed {
     if (!is_object($name)) {
       $name = $this->singleton($name);
     }
@@ -143,7 +143,7 @@ class Application {
    *
    * @return object|null
    */
-  public function clean(string $name) {
+  public function clean(string $name): object|null {
     $object = $this->objectPool[$name] ?? null;
     $this->objectPool[$name] = null;
     unset($this->objectPool[$name]);
@@ -161,7 +161,7 @@ class Application {
    * 
    * @throws Exception
    */
-  public function resolve(Closure $name, array $default = []) {
+  public function resolve(Closure $name, array $default = []): mixed {
     try {
       $reflector = new ReflectionFunction($name);
       $arg = $reflector->getParameters();
@@ -182,7 +182,7 @@ class Application {
    * 
    * @throws Exception
    */
-  public function bind(string $abstract, $class): void {
+  public function bind(string $abstract, mixed $class): void {
     if ($class instanceof Closure) {
       $result = $this->resolve($class, array($this));
 

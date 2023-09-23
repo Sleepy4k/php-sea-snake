@@ -47,20 +47,29 @@ class Service {
    * @return int
    */
   private function invokeController(array $route, array $variables): int {
-    $controller = $route['controller'];
-    $function = $route['function'];
+    $routeController = $route['controller'] ?? null;
+    $routeFunction = $route['function'] ?? null;
+    $namespace = $route['namespace'] ?? null;
+    $function = null;
 
-    if ($function === null) {
+    if (is_null($routeFunction)) {
       return 0;
     }
 
-    if ($controller === null) {
-      $controller = $function;
+    if (is_null($routeController)) {
       $function = '__invoke';
     }
 
+    if (!is_null($namespace)) {
+      $controller = $namespace . '\\' . str_replace('/', '\\', $routeFunction);
+    } else {
+      $controller = $routeController;
+    }
+
     array_shift($variables);
-    App::get()->invoke($controller, $function, $variables);
+
+    $functionToInvoke = ($function == '__invoke') ? $function : $routeController;
+    App::get()->invoke($controller, $functionToInvoke, $variables);
 
     return 0;
   }
@@ -115,30 +124,20 @@ class Service {
    * @return int
    */
   public function run(): int {
+    $routeMatch = false;
     $url = $this->getValidUrl();
-    $path = parse_url($url, PHP_URL_PATH);
     $this->request->__set('REQUEST_URL', $url);
 
-    if ($path != '/') {
-      $path = '/' . trim($path, '/');
-    }
-
-    $method = $this->request->method() === 'POST'
-      ? strtoupper($this->request->get('_method', 'POST'))
-      : $this->request->method();
-
-    $routeMatch = false;
+    $path = '/' . trim(parse_url($url, PHP_URL_PATH), '/');
+    $method = strtoupper($this->request->method() === 'POST' ? $this->request->get('_method', 'POST') : $this->request->method());
 
     foreach (Route::router()->routes() as $route) {
-      $pattern = '#^' . $route['path'] . '$#';
-      $variables = [];
-
-      if (preg_match($pattern, $path, $variables)) {
-        $routeMatch = true;
-
+      if (preg_match('#^' . $route['path'] . '$#', $path, $variables)) {
         if ($route['method'] === $method) {
           return $this->invokeController($route, $variables);
         }
+
+        $routeMatch = true;
       }
     }
 
