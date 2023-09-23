@@ -10,7 +10,7 @@ class Input {
    *
    * @return bool
    */
-  public static function exists(string $type = ''): bool {
+  public static function exists(string $type): bool {
     switch ($type) {
       case 'post':
         return (!empty($_POST)) ? true : false;
@@ -31,7 +31,7 @@ class Input {
    *
    * @return string
    */
-  public static function get(string $item = ''): string {
+  public static function get(string $item): string {
     if (isset($_POST[$item])) {
       return $_POST[$item];
     } else if (isset($_GET[$item])) {
@@ -57,7 +57,7 @@ class Input {
    *
    * @return string
    */
-  public static function old(string $item = ''): string {
+  public static function old(string $item): string {
     if (isset($_SESSION['old'][$item])) {
       return $_SESSION['old'][$item];
     }
@@ -73,7 +73,7 @@ class Input {
    *
    * @return void
    */
-  public static function set(string $item = '', string $value = ''): void {
+  public static function set(string $item, string $value): void {
     $_SESSION['old'][$item] = $value;
   }
 
@@ -84,7 +84,7 @@ class Input {
    *
    * @return void
    */
-  public static function delete(string $item = ''): void {
+  public static function delete(string $item): void {
     unset($_SESSION['old'][$item]);
   }
 }

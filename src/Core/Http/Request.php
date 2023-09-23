@@ -58,7 +58,7 @@ class Request {
    *
    * @return mixed
    */
-  public function get($name = null, $defaultValue = null) {
+  public function get(string|null $name = null, mixed $defaultValue = null): mixed {
     if ($name === null) {
       return $this->requestData;
     }
@@ -74,7 +74,7 @@ class Request {
    *
    * @return mixed
    */
-  public function server($name = null, $defaultValue = null) {
+  public function server(string|null $name = null, mixed $defaultValue = null): mixed {
     if ($name === null) {
       return $this->serverData;
     }
@@ -98,7 +98,7 @@ class Request {
    *
    * @return void
    */
-  public function throw($error): void {
+  public function throw(mixed $error): void {
     if ($error instanceof Validator) {
       if ($this->validator instanceof Validator) {
         throw new Exception('Terdapat 2 object validator !');
@@ -181,11 +181,10 @@ class Request {
    * Get old request data
    *
    * @param string|null $name
-   * @param mixed $defaultValue
    *
    * @return mixed
    */
-  public function __get(string $name) {
+  public function __get(string $name): mixed {
     return $this->__isset($name) ? $this->requestData[$name] : null;
   }
 
@@ -197,7 +196,7 @@ class Request {
    *
    * @return void
    */
-  public function __set(string $name, $value): void {
+  public function __set(string $name, mixed $value): void {
     $this->requestData[$name] = $value;
   }
 

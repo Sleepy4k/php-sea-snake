@@ -10,7 +10,7 @@ class Session {
    *
    * @return bool
    */
-  public static function exists(string $name = ''): bool {
+  public static function exists(string $name): bool {
     return (isset($_SESSION[$name])) ? true : false;
   }
 
@@ -21,7 +21,7 @@ class Session {
    *
    * @return mixed
    */
-  public static function get(string $name = '') {
+  public static function get(string $name): mixed {
     return $_SESSION[$name];
   }
 
@@ -33,7 +33,7 @@ class Session {
    *
    * @return mixed
    */
-  public static function set(string $name, mixed $value) {
+  public static function set(string $name, mixed $value): mixed {
     return $_SESSION[$name] = $value;
   }
 
@@ -44,7 +44,7 @@ class Session {
    *
    * @return void
    */
-  public static function delete(string $name = ''): void {
+  public static function delete(string $name): void {
     if (self::exists($name)) {
       unset($_SESSION[$name]);
     }
@@ -58,7 +58,7 @@ class Session {
    *
    * @return string
    */
-  public static function flash(string $name = '', string $value = ''): string {
+  public static function flash(string $name, mixed $value): string {
     if (self::exists($name)) {
       $session = self::get($name);
       self::delete($name);
@@ -75,7 +75,7 @@ class Session {
    *
    * @return string
    */
-  public static function getOnce(string $name = ''): string {
+  public static function getOnce(string $name): string {
     if (self::exists($name)) {
       $session = self::get($name);
       self::delete($name);

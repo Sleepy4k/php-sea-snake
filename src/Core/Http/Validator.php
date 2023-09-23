@@ -78,7 +78,7 @@ class Validator {
    *
    * @return void
    */
-  private function validateRequest(string $param, $value, string $rule): void {
+  private function validateRequest(string $param, mixed $value, string $rule): void {
     if (str_contains($rule, 'min')) {
       $min = intval(explode(':', $rule)[1]);
 
@@ -309,7 +309,7 @@ class Validator {
    *
    * @return void
    */
-  private function setError(string $param, string $alert, $optional = null): void {
+  private function setError(string $param, string $alert, mixed $optional = null): void {
     if (empty($this->errors[$param])) {
       $this->errors[$param] = $param . ' ' . $alert . ($optional ? ' ' . strval($optional) : '');
     }
@@ -422,7 +422,7 @@ class Validator {
    *
    * @return mixed
    */
-  public function get(string $name = null, $defaultValue = null) {
+  public function get(string $name = null, mixed $defaultValue = null): mixed {
     if ($name === null) {
       return $this->data;
     }
@@ -437,7 +437,7 @@ class Validator {
    *
    * @return mixed
    */
-  public function __get(string $name) {
+  public function __get(string $name): mixed {
     return $this->__isset($name) ? $this->data[$name] : null;
   }
 
@@ -449,7 +449,7 @@ class Validator {
    *
    * @return void
    */
-  public function __set(string $name, $value): void {
+  public function __set(string $name, mixed $value): void {
     $this->data[$name] = $value;
   }
 

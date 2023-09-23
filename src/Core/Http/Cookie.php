@@ -10,7 +10,7 @@ class Cookie {
    *
    * @return bool
    */
-  public static function exists(string $name = ''): bool {
+  public static function exists(string $name): bool {
     return (isset($_COOKIE[$name])) ? true : false;
   }
 
@@ -21,7 +21,7 @@ class Cookie {
    *
    * @return string
    */
-  public static function get(string $name = ''): string {
+  public static function get(string $name): string {
     return $_COOKIE[$name];
   }
 
@@ -34,7 +34,7 @@ class Cookie {
    *
    * @return bool
    */
-  public static function set(string $name = '', string $value = '', int $expiry = 0): bool {
+  public static function set(string $name, string $value, int $expiry = 0): bool {
     if (setcookie($name, $value, time() + $expiry, '/')) {
       return true;
     }
@@ -49,7 +49,7 @@ class Cookie {
    *
    * @return void
    */
-  public static function delete(string $name = ''): void {
+  public static function delete(string $name): void {
     self::set($name, '', time() - 1);
   }
 }
