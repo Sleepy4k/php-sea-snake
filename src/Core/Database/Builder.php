@@ -4,8 +4,9 @@ namespace Snake\Core\Database;
 
 use PDO;
 use PDOException;
+use Snake\Interface\Database\IBuilder;
 
-class Builder {
+class Builder implements IBuilder {
   /**
    * Object instance
    *
@@ -57,7 +58,7 @@ class Builder {
    *
    * @return object
    */
-  public function pdo() {
+  public function pdo(): object {
     return $this->pdo;
   }
 
@@ -69,7 +70,7 @@ class Builder {
    *
    * @return object
    */
-  public function query(string $sql, array $params = []) {
+  public function query(string $sql, array $params = []): object {
     if (count($params) > 0) {
       $stmt = $this->pdo->prepare($sql);
       $stmt->execute($params);
@@ -87,7 +88,7 @@ class Builder {
    *
    * @return object
    */
-  public function all(string $table) {
+  public function all(string $table): object {
     $stmt = $this->pdo->prepare('SELECT * FROM ' . $table);
     $stmt->execute();
 
@@ -102,7 +103,7 @@ class Builder {
    *
    * @return object
    */
-  public function get(string $table, array $where = []) {
+  public function get(string $table, array $where = []): object {
     if (count($where) > 0) {
       $sql = 'SELECT * FROM ' . $table . ' WHERE ';
       $i = 0;
@@ -133,7 +134,7 @@ class Builder {
    *
    * @return object
    */
-  public function insert(string $table, array $data = []) {
+  public function insert(string $table, array $data = []): object {
     if (count($data) > 0) {
       $sql = 'INSERT INTO ' . $table . ' (';
       $i = 0;
@@ -179,7 +180,7 @@ class Builder {
    *
    * @return object
    */
-  public function update(string $table, array $data = [], array $where = []) {
+  public function update(string $table, array $data = [], array $where = []): object {
     if (count($data) > 0) {
       $sql = 'UPDATE ' . $table . ' SET ';
       $i = 0;
@@ -222,7 +223,7 @@ class Builder {
    *
    * @return object
    */
-  public function delete(string $table, array $where = []) {
+  public function delete(string $table, array $where = []): object {
     if (count($where) > 0) {
       $sql = 'DELETE FROM ' . $table . ' WHERE ';
       $i = 0;
@@ -250,7 +251,7 @@ class Builder {
    *
    * @return string
    */
-  public function lastInsertId() {
+  public function lastInsertId(): string {
     return $this->pdo->lastInsertId();
   }
 }

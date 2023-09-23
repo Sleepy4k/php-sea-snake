@@ -3,8 +3,9 @@
 namespace Snake\Core\Database;
 
 use Snake\Core\Facade\App;
+use Snake\Interface\Database\IDB;
 
-final class DB {
+final class DB implements IDB {
   /**
    * Query the database
    * 
@@ -13,7 +14,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function query(string $sql, array $params = []) {
+  public static function query(string $sql, array $params = []): object {
     return static::builder()->query($sql, $params);
   }
 
@@ -24,7 +25,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function all(string $table) {
+  public static function all(string $table): object {
     return static::builder()->all($table);
   }
 
@@ -36,7 +37,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function get(string $table, array $where = []) {
+  public static function get(string $table, array $where = []): object {
     return static::builder()->get($table, $where);
   }
 
@@ -48,7 +49,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function insert(string $table, array $data = []) {
+  public static function insert(string $table, array $data = []): object {
     return static::builder()->insert($table, $data);
   }
 
@@ -61,7 +62,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function update(string $table, array $data = [], array $where = []) {
+  public static function update(string $table, array $data = [], array $where = []): object {
     return static::builder()->update($table, $data, $where);
   }
 
@@ -73,7 +74,7 @@ final class DB {
    * 
    * @return object
    */
-  public static function delete(string $table, array $where = []) {
+  public static function delete(string $table, array $where = []): object {
     return static::builder()->delete($table, $where);
   }
 
