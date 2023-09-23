@@ -4,6 +4,7 @@ namespace Snake\Core\Middleware;
 
 use Closure;
 use Snake\Core\Http\Request;
+use Snake\Interface\Middleware\IMiddleware;
 
 class Middleware {
   /**
@@ -30,11 +31,11 @@ class Middleware {
    * Create layer
    *
    * @param Closure $nextLayer
-   * @param MiddlewareInterface $layer
+   * @param IMiddleware $layer
    *
    * @return Closure
    */
-  private function createLayer(Closure $nextLayer, MiddlewareInterface $layer): Closure {
+  private function createLayer(Closure $nextLayer, IMiddleware $layer): Closure {
     return function (Request $request) use ($nextLayer, $layer) {
       return $layer->handle($request, $nextLayer);
     };
@@ -48,10 +49,10 @@ class Middleware {
    *
    * @return mixed
    */
-  public function handle(Request $request, Closure $core) {
+  public function handle(Request $request, Closure $core): mixed {
     $next = array_reduce(
       $this->layers,
-      function (Closure $nextLayer, MiddlewareInterface $layer): Closure {
+      function (Closure $nextLayer, IMiddleware $layer): Closure {
         return $this->createLayer($nextLayer, $layer);
       },
       $core
