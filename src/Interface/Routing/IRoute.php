@@ -141,9 +141,9 @@ interface IRoute {
    *
    * @param string $name
    *
-   * @return array|null
+   * @return string|null
    */
-  public static function getRoute(string $name): array|null;
+  public static function getRoute(string $name): string|null;
 
   /**
    * Check if the current route is the given route
