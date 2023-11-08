@@ -5,11 +5,11 @@ use Snake\Core\View\Sea;
 /**
  * Handle exceptions
  * 
- * @param Exception $e
+ * @param any $e
  * 
  * @return void
  */
-function ExceptionHandler(Exception $e): void {
+function ExceptionHandler($e): void {
   Sea::view('errors.trace', [
     'exception' => [
       'file' => $e->getFile(),
@@ -18,6 +18,8 @@ function ExceptionHandler(Exception $e): void {
       'trace' => $e->getTraceAsString()
     ]
   ]);
+
+  exit(1);
 }
 
 set_exception_handler("ExceptionHandler");
