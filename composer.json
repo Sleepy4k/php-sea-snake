@@ -28,6 +28,7 @@
       "src/Helper/redirect.php",
       "src/Helper/session.php",
       "src/Helper/url.php",
+      "src/Helper/route.php",
 
       "src/Exception/ErrorHandler.php",
       "src/Exception/ExceptionHandler.php"
