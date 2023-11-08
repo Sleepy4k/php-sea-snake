@@ -291,12 +291,12 @@ class Router implements IRouter {
    *
    * @param string $name
    *
-   * @return array|null
+   * @return string|null
    */
-  public function getRoute(string $name): array|null {
+  public function getRoute(string $name): string|null {
     foreach ($this->routes as $route) {
       if ($route['path'] == $name) {
-        return baseurl() . $route['path'];
+        return rtrim(baseurl(), "/") . $route['path'];
       }
     }
 

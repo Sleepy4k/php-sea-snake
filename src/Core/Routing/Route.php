@@ -168,9 +168,9 @@ final class Route implements IRoute {
    *
    * @param string $name
    *
-   * @return array|null
+   * @return string|null
    */
-  public static function getRoute(string $name): array|null {
+  public static function getRoute(string $name): string|null {
     return static::router()->getRoute($name);
   }
 
