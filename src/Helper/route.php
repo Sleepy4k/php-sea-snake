@@ -8,9 +8,9 @@ if (!function_exists('route')) {
    * 
    * @param string $path
    * 
-   * @return string
+   * @return string|null
    */
-  function route(string $path): array|null {
+  function route(string $path): string|null {
     return Route::getRoute($path);
   }
 }
