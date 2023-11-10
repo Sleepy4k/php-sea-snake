@@ -11,7 +11,7 @@ final class Kernel {
    * @return Application
    */
   private static function build(): Application {
-    session_start();
+    session_start();  
     App::new(new Application());
     return App::get();
   }
