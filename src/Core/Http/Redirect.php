@@ -11,7 +11,12 @@ class Redirect {
    * @return void
    */
   public static function to(string $path): void {
-    header('Location: ' . $path);
+    if (route_exist($path)) {
+      header('Location: ' . route($path));
+    } else {
+      header('Location: ' . $path);
+    }
+
     exit();
   }
 
@@ -25,8 +30,8 @@ class Redirect {
    */
   public static function with(string $path, string $message = ''): void {
     $_SESSION['message'] = $message;
-    header('Location: ' . $path);
-    exit();
+
+    static::to($path);
   }
 
   /**
@@ -41,8 +46,8 @@ class Redirect {
   public static function withData(string $path, string $message = '', array $data = []): void {
     $_SESSION['message'] = $message;
     $_SESSION['data'] = $data;
-    header('Location: ' . $path);
-    exit();
+
+    static::to($path);
   }
 
   /**
@@ -57,8 +62,8 @@ class Redirect {
   public static function withErrors(string $path, string $message = '', array $errors = []): void {
     $_SESSION['message'] = $message;
     $_SESSION['errors'] = $errors;
-    header('Location: ' . $path);
-    exit();
+
+    static::to($path);
   }
 
   /**
@@ -75,7 +80,7 @@ class Redirect {
     $_SESSION['message'] = $message;
     $_SESSION['data'] = $data;
     $_SESSION['errors'] = $errors;
-    header('Location: ' . $path);
-    exit();
+
+    static::to($path);
   }
 }

@@ -82,4 +82,42 @@ class Session {
       return $session;
     }
   }
+
+  /**
+   * Destroy all sessions
+   * 
+   * @return void
+   */
+  public static function destroy(): void {
+    session_destroy();
+  }
+
+  /**
+   * Start session
+   * 
+   * @return void
+   */
+  public static function start(): void {
+    session_start();
+  }
+
+  /**
+   * Stop session
+   * 
+   * @return void
+   */
+  public static function stop(): void {
+    session_abort();
+  }
+
+  /**
+   * Regenerate session id
+   * 
+   * @return void
+   */
+  public static function regenerate(): void {
+    static::destroy();
+    static::start();
+    session_regenerate_id(true);
+  }
 }
