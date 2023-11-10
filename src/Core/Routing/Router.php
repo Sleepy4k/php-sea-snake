@@ -42,6 +42,13 @@ class Router implements IRouter {
   protected $namespace;
 
   /**
+   * Name for routes
+   * 
+   * @var string|null $name
+   */
+  protected $name;
+
+  /**
    * Constructor
    *
    * @return void
@@ -81,7 +88,8 @@ class Router implements IRouter {
       'controller' => $controller,
       'function' => $function,
       'middleware' => $middleware,
-      'name' => null,
+      'name' => $this->name,
+      'alias' => null,
       'namespace' => $this->namespace
     ];
 
@@ -237,14 +245,16 @@ class Router implements IRouter {
   }
 
   /**
-   * Set the name for the next routes
+   * Set the alias for the next routes
    *
    * @param string $name
    *
-   * @return void
+   * @return Router
    */
-  private function name(string $name): void {
-    $this->routes[count($this->routes) - 1]['name'] = $name;
+  public function alias(string $alias): Router {
+    $this->routes[count($this->routes) - 1]['alias'] = $alias;
+
+    return $this;
   }
 
   /**
@@ -254,8 +264,8 @@ class Router implements IRouter {
    *
    * @return Router
    */
-  public function as(string $name): Router {
-    $this->name($name);
+  public function name(string $name): Router {
+    $this->name = $name;
 
     return $this;
   }
@@ -270,23 +280,6 @@ class Router implements IRouter {
   }
 
   /**
-   * Check if a route exists
-   *
-   * @param string $name
-   *
-   * @return bool
-   */
-  public function hasRoute(string $name): bool {
-    foreach ($this->routes as $route) {
-      if ($route['path'] == $name) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /**
    * Get a route
    *
    * @param string $name
@@ -295,12 +288,23 @@ class Router implements IRouter {
    */
   public function getRoute(string $name): string|null {
     foreach ($this->routes as $route) {
-      if ($route['path'] == $name) {
-        return rtrim(baseurl(), "/") . $route['path'];
-      }
+      $alias = !empty($route['name']) ? $route['name'] . $route['alias'] : $route['alias'];
+
+      if ($alias == $name) return rtrim(baseurl(), "/") . $route['path'];
     }
 
     return null;
+  }
+
+  /**
+   * Check if a route exists
+   *
+   * @param string $name
+   *
+   * @return bool
+   */
+  public function hasRoute(string $name): bool {
+    return (!is_null($this->getRoute($name))) ? true : false;
   }
 
   /**

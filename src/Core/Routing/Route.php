@@ -142,14 +142,25 @@ final class Route implements IRoute {
   }
 
   /**
+   * Add alias to routes
+   * 
+   * @param string $alias
+   * 
+   * @return Router
+   */
+  public static function alias(string $alias): Router {
+    return static::router()->alias($alias);
+  }
+
+  /**
    * Add name to routes
    *
    * @param string $name
    *
-   * @return void
+   * @return Router
    */
-  public static function as(string $name): void {
-    static::router()->as($name);
+  public static function name(string $name): Router {
+    return static::router()->name($name);
   }
 
   /**
