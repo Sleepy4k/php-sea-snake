@@ -119,13 +119,22 @@ interface IRouter {
   public function namespace(string $namespace): Router;
 
   /**
+   * Add alias to routes
+   * 
+   * @param string $alias
+   * 
+   * @return Router
+   */
+  public function alias(string $alias): Router;
+
+  /**
    * Add name to routes
    *
    * @param string $name
    *
    * @return Router
    */
-  public function as(string $name): Router;
+  public function name(string $name): Router;
 
   /**
    * Check if a route exists

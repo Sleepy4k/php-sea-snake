@@ -119,22 +119,22 @@ interface IRoute {
   public static function namespace(string $namespace): Router;
 
   /**
+   * Add alias to routes
+   * 
+   * @param string $alias
+   * 
+   * @return Router
+   */
+  public static function alias(string $alias): Router;
+
+  /**
    * Add name to routes
    *
    * @param string $name
    *
-   * @return void
+   * @return Router
    */
-  public static function as(string $name): void;
-
-  /**
-   * Check if a route exists
-   *
-   * @param string $name
-   *
-   * @return bool
-   */
-  public static function hasRoute(string $name): bool;
+  public static function name(string $name): Router;
 
   /**
    * Get a route
@@ -144,6 +144,15 @@ interface IRoute {
    * @return string|null
    */
   public static function getRoute(string $name): string|null;
+
+  /**
+   * Check if a route exists
+   *
+   * @param string $name
+   *
+   * @return bool
+   */
+  public static function hasRoute(string $name): bool;
 
   /**
    * Check if the current route is the given route
